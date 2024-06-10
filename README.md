@@ -3,8 +3,9 @@ Welcome to the Practice Assignments repository! This repository is designed to h
 
 <h2> 📚 Contents </h2>
 <b> General Practice Assignments </b>
+ <ul>
 Data Cleaning and Preprocessing
-
+ </ul>
 Explore techniques for handling missing data, normalizing data, and feature engineering.
 Files: data_cleaning.ipynb, preprocessing_tutorial.md
 Exploratory Data Analysis (EDA)
