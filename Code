@@ -1,0 +1,123 @@
+>>> import pandas as pd
+>>> import matplotlib.pyplot as plt
+>>> import numpy as npfrom sklearn import linear_model
+  File "<stdin>", line 1
+    import numpy as npfrom sklearn import linear_model
+                           ^^^^^^^
+SyntaxError: invalid syntax
+>>> from sklearn.metrics import r2_score
+>>>
+>>>
+>>> import numpy as np
+>>> from sklearn import linear_model
+>>> from sklearn.metrics import r2_score
+>>> import urllib.request
+>>>
+>>> url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-ML0101EN-SkillsNetwork/labs/Module%202/data/FuelConsumptionCo2.csv"
+>>> filename = "FuelConsumption.csv"
+>>> urllib.request.urlretrieve(url, filename)
+('FuelConsumption.csv', <http.client.HTTPMessage object at 0x000002EE3F19C3B0>)
+>>> df = pd.read_csv("FuelConsumption.csv")
+>>> print(df.head())
+   MODELYEAR   MAKE       MODEL  ... FUELCONSUMPTION_COMB  FUELCONSUMPTION_COMB_MPG  CO2EMISSIONS
+0       2014  ACURA         ILX  ...                  8.5                        33           196
+1       2014  ACURA         ILX  ...                  9.6                        29           221
+2       2014  ACURA  ILX HYBRID  ...                  5.9                        48           136
+3       2014  ACURA     MDX 4WD  ...                 11.1                        25           255
+4       2014  ACURA     RDX AWD  ...                 10.6                        27           244
+
+[5 rows x 13 columns]
+>>> print(df.describe())
+       MODELYEAR   ENGINESIZE    CYLINDERS  ...  FUELCONSUMPTION_COMB  FUELCONSUMPTION_COMB_MPG  CO2EMISSIONS
+count     1067.0  1067.000000  1067.000000  ...           1067.000000               1067.000000   1067.000000
+mean      2014.0     3.346298     5.794752  ...             11.580881                 26.441425    256.228679
+std          0.0     1.415895     1.797447  ...              3.485595                  7.468702     63.372304
+min       2014.0     1.000000     3.000000  ...              4.700000                 11.000000    108.000000
+25%       2014.0     2.000000     4.000000  ...              9.000000                 21.000000    207.000000
+50%       2014.0     3.400000     6.000000  ...             10.900000                 26.000000    251.000000
+75%       2014.0     4.300000     8.000000  ...             13.350000                 31.000000    294.000000
+max       2014.0     8.400000    12.000000  ...             25.800000                 60.000000    488.000000
+
+[8 rows x 8 columns]
+>>> cdf = df[['ENGINESIZE','CYLINDERS','FUELCONSUMPTION_COMB','CO2EMISSIONS']]
+>>> print(cdf.head(9))
+   ENGINESIZE  CYLINDERS  FUELCONSUMPTION_COMB  CO2EMISSIONS
+0         2.0          4                   8.5           196
+1         2.4          4                   9.6           221
+2         1.5          4                   5.9           136
+3         3.5          6                  11.1           255
+4         3.5          6                  10.6           244
+5         3.5          6                  10.0           230
+6         3.5          6                  10.1           232
+7         3.7          6                  11.1           255
+8         3.7          6                  11.6           267
+>>> viz = cdf[['CYLINDERS','ENGINESIZE','CO2EMISSIONS','FUELCONSUMPTION_COMB']]
+>>> viz.hist()
+array([[<Axes: title={'center': 'CYLINDERS'}>,
+        <Axes: title={'center': 'ENGINESIZE'}>],
+       [<Axes: title={'center': 'CO2EMISSIONS'}>,
+        <Axes: title={'center': 'FUELCONSUMPTION_COMB'}>]], dtype=object)
+>>> plt.show()
+>>>
+>>> plt.scatter(cdf.FUELCONSUMPTION_COMB, cdf.CO2EMISSIONS, color='blue')
+<matplotlib.collections.PathCollection object at 0x000002EE3F70D6D0>
+>>> plt.xlabel("FUELCONSUMPTION_COMB")
+Text(0.5, 0, 'FUELCONSUMPTION_COMB')
+>>> plt.ylabel("Emission")
+Text(0, 0.5, 'Emission')
+>>> plt.show()
+>>>
+>>> plt.scatter(cdf.ENGINESIZE, cdf.CO2EMISSIONS, color='blue')
+<matplotlib.collections.PathCollection object at 0x000002EE3F72AA80>
+>>> plt.xlabel("Engine size")
+Text(0.5, 0, 'Engine size')
+>>> plt.ylabel("Emission")
+Text(0, 0.5, 'Emission')
+>>> plt.show()
+2024-06-10T17:25:45.489ZE [12464:NonCelloThread] thumbnail_util_win.cc:115:LoadBitmapFromPngResource Can't find PNG resource 0.
+2024-06-10T17:25:45.494ZI [12464:NonCelloThread] ctxmenu.cc:213:GenerateContextMenu Received context menu with 0 menu items.
+>>>
+>>>
+>>> msk = np.random.rand(len(df)) < 0.8
+>>> train = cdf[msk]
+>>> test = cdf[~msk]
+>>> regr = linear_model.LinearRegression()
+>>> train_x = np.asanyarray(train[['ENGINESIZE']])
+>>> train_y = np.asanyarray(train[['CO2EMISSIONS']])
+>>> regr.fit(train_x, train_y)
+LinearRegression()
+>>>
+>>> # Output the coefficients
+>>> print('Coefficients: ', regr.coef_)
+Coefficients:  [[39.18274666]]
+>>> print('Intercept: ', regr.intercept_)
+Intercept:  [124.07057011]
+>>> plt.scatter(train.ENGINESIZE, train.CO2EMISSIONS, color='blue')
+<matplotlib.collections.PathCollection object at 0x000002EE3F739760>
+>>> plt.plot(train_x, regr.coef_[0][0] * train_x + regr.intercept_[0], '-r')
+[<matplotlib.lines.Line2D object at 0x000002EE40817A70>]
+>>> plt.xlabel("Engine size")
+Text(0.5, 0, 'Engine size')
+>>> plt.ylabel("Emission")
+Text(0, 0.5, 'Emission')
+>>> plt.show()
+>>> test_x = np.asanyarray(test[['ENGINESIZE']])
+>>> test_y = np.asanyarray(test[['CO2EMISSIONS']])
+>>> test_y_ = regr.predict(test_x)
+>>>
+>>> print("Mean absolute error: %.2f" % np.mean(np.absolute(test_y_ - test_y)))
+Mean absolute error: 23.21
+>>> print("Residual sum of squares (MSE): %.2f" % np.mean((test_y_ - test_y) ** 2))
+Residual sum of squares (MSE): 932.82
+>>> print("R2-score: %.2f" % r2_score(test_y, test_y_))
+R2-score: 0.77
+>>> test_x = np.asanyarray(test[['ENGINESIZE']])
+>>> test_y = np.asanyarray(test[['CO2EMISSIONS']])
+>>> test_y_ = regr.predict(test_x)
+>>>
+>>> print("Mean absolute error: %.2f" % np.mean(np.absolute(test_y_ - test_y)))
+Mean absolute error: 23.21
+>>> print("Residual sum of squares (MSE): %.2f" % np.mean((test_y_ - test_y) ** 2))
+Residual sum of squares (MSE): 932.82
+>>> print("R2-score: %.2f" % r2_score(test_y, test_y_))
+R2-score: 0.77
