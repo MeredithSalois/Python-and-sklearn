@@ -1,4 +1,4 @@
-# 🚀 Python-and-sklearn
+# 🚀 Python and sklearn Practice
 Welcome to the Practice Assignments repository! This repository is designed to help you enhance your skills in data science, machine learning, and data visualization through a series of hands-on assignments. Whether you're a beginner looking to grasp the basics or an advanced user seeking to refine your expertise, this collection provides a structured and practical approach to learning.
 
 📚 Contents
